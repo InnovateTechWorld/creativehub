@@ -4,6 +4,67 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Music, BookText, Code, Palette, Megaphone } from "lucide-react";
 import { useState } from "react";
+import { ethers } from 'ethers';
+
+const contractAddress = "0xbab70c3766e3ad630b17e0588a381be1e620b97a";
+const contractABI = [
+    {
+        "inputs": [],
+        "name": "initialize",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "description",
+                "type": "string"
+            },
+            {
+                "internalType": "uint128",
+                "name": "budget",
+                "type": "uint128"
+            },
+            {
+                "internalType": "address",
+                "name": "talent",
+                "type": "address"
+            }
+        ],
+        "name": "postJob",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint128",
+                "name": "job_id",
+                "type": "uint128"
+            }
+        ],
+        "name": "applyForJob",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint128",
+                "name": "job_id",
+                "type": "uint128"
+            }
+        ],
+        "name": "completeProject",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+];
 
 const mockJobs = [
   {
@@ -62,6 +123,40 @@ export const JobListings = () => {
     job.skills.some(skill => skill.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
+    const handleApply = async (jobId: number) => {
+        if (window.ethereum) {
+            try {
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const signer = await provider.getSigner();
+                const contract = new ethers.Contract(contractAddress, contractABI, signer);
+                const tx = await contract.applyForJob(jobId);
+                await tx.wait();
+                console.log("Applied for job successfully");
+            } catch (error) {
+                console.error("Error applying for job:", error);
+            }
+        } else {
+            console.error("Metamask is not installed");
+        }
+    };
+
+    const handleComplete = async (jobId: number) => {
+        if (window.ethereum) {
+            try {
+                const provider = new ethers.BrowserProvider(window.ethereum);
+                const signer = await provider.getSigner();
+                const contract = new ethers.Contract(contractAddress, contractABI, signer);
+                const tx = await contract.completeProject(jobId);
+                await tx.wait();
+                console.log("Project completed successfully");
+            } catch (error) {
+                console.error("Error completing project:", error);
+            }
+        } else {
+            console.error("Metamask is not installed");
+        }
+    };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-4">
@@ -98,7 +193,8 @@ export const JobListings = () => {
               </div>
             </CardContent>
             <CardFooter className="mt-auto">
-              <Button className="w-full">Apply Now</Button>
+              <Button className="w-full" onClick={() => handleApply(job.id)}>Apply Now</Button>
+              <Button className="w-full" onClick={() => handleComplete(job.id)}>Complete Project</Button>
             </CardFooter>
           </Card>
         ))}
