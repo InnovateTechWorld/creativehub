@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ export const Hero = () => {
   };
 
   const handlePostJob = () => {
-    navigate('@/dashboard/PostJob');
+    navigate('/dashboard/PostJob');
   };
 
   return (
@@ -39,6 +40,12 @@ export const Hero = () => {
               onClick={handlePostJob}
             >
               Post a Job
+            </Button>
+            <Button
+              size="lg"
+              variant="secondary"
+            >
+              <Link to="/dashboard">Go to Dashboard</Link>
             </Button>
           </div>
         </div>

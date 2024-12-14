@@ -11,7 +11,7 @@ export const Navbar = () => {
           </span>
         </div>
         <div className="flex items-center space-x-4">
-          <Button variant="outline">Sign In</Button>
+            <Button variant="outline" onClick={() => window.location.href = '/dashboard'}>Sign In</Button>
           <Button className="bg-primary hover:bg-primary/90">
             <Wallet2 className="mr-2 h-4 w-4" />
             Connect Wallet
